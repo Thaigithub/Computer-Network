@@ -132,7 +132,7 @@ class Client:
 	def describeMedia(self):
 		"""Setup button handler."""
 		print("Hey Im here")
-		if self.state == self.READY:
+		if self.state == self.READY or self.state == self.PLAYING:
 			print("\n\n\n******************DESCRIBE REQUEST************************")
 			self.sendRtspRequest(self.DESCRIBE)
 
