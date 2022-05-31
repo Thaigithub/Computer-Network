@@ -186,8 +186,8 @@ class Client:
 		total_payload = 0
 		while True:
 			try:
-				print("-----------------------------------------------------------------")
-				print("LISTENING...")
+				#print("-----------------------------------------------------------------")
+				#print("LISTENING...")
 				data = self.rtpSocket.recv(20480)
 				if data:
 					rtpPacket = RtpPacket()
@@ -196,27 +196,27 @@ class Client:
 					currFrameNbr = rtpPacket.frameNum()
 					currFrameSeq = rtpPacket.seqNum()
 
-					print ("CURRENT SEQUENCE NUM: " + str(currFrameNbr))
+					#print ("CURRENT SEQUENCE NUM: " + str(currFrameNbr))
 					if currFrameSeq>self.frameSeq: # Discard the late packet
 						# Calculate Video Rate
 						last_time=datetime.now()
-						print(f"Last: {start_time.microsecond/(pow(10,6))}s   Now: {last_time.microsecond/(pow(10,6))}s")
+						#print(f"Last: {start_time.microsecond/(pow(10,6))}s   Now: {last_time.microsecond/(pow(10,6))}s")
 						interval = (last_time - start_time).total_seconds() + math.exp(-13)
 						start_time = datetime.now()
 						payload_size = sys.getsizeof(rtpPacket.getPayload())
 						payload_size_inKB = float(payload_size / 1024)
-						print(f"Pay Load size:{payload_size_inKB} KB    Interval: {interval}s")
-						print(f"Video rate: {float(payload_size_inKB / interval)} KB/s\n")
+						#print(f"Pay Load size:{payload_size_inKB} KB    Interval: {interval}s")
+						#print(f"Video rate: {float(payload_size_inKB / interval)} KB/s\n")
 
 						# Calculate RTP packet lose rate
 						lostFrame += currFrameSeq - self.frameSeq - 1
-						print(f"Number of lose frame:{lostFrame}     RTP packet lose rate:{float(100 * (lostFrame / currFrameNbr))}%\n")
+						#print(f"Number of lose frame:{lostFrame}     RTP packet lose rate:{float(100 * (lostFrame / currFrameNbr))}%\n")
 
 						total_payload += payload_size_inKB
 
 						# Calculate Throughput
-						print(f"Total payload size: {total_payload} KB  Execution time:{(last_time-begin_time).total_seconds()}s")
-						print(f"Throughput: {float(total_payload / (last_time-begin_time).total_seconds())} KB/s\n\n\n")
+						#print(f"Total payload size: {total_payload} KB  Execution time:{(last_time-begin_time).total_seconds()}s")
+						#print(f"Throughput: {float(total_payload / (last_time-begin_time).total_seconds())} KB/s\n\n\n")
 
 						self.frameSeq = currFrameSeq
 
@@ -460,6 +460,7 @@ class Client:
 			self.pauseMovie()
 
 	def getNextFileName(self, oldFileName):
+		print("Choosing next file")
 		nextFileName = oldFileName
 		firstFileName = oldFileName
 		list_file = os.listdir()
@@ -476,9 +477,11 @@ class Client:
 				break
 		if nextFileName == oldFileName:
 			return firstFileName
+		#print(nextFileName)
 		return nextFileName
 
 	def getPreFileName(self, oldFileName):
+		print("Choosing previous file")
 		nextFileName = oldFileName
 		firstFileName = oldFileName
 		list_file = os.listdir()
@@ -496,11 +499,12 @@ class Client:
 				break
 		if nextFileName == oldFileName:
 			return firstFileName
+		#print(nextFileName)
 		return nextFileName
 
 	def nextMovie(self):
 		if self.state != self.INIT:
-			self.pauseMovie()
+			#self.pauseMovie()
 			self.sendRtspRequest(self.TEARDOWN)
 			self.state = self.INIT
 			self.threadlisten.join()
@@ -515,12 +519,14 @@ class Client:
 			self.frameNbr = 0
 			self.totalTime = 0
 			self.frameSeq=0
+			self.setupAndPlay()
 		else:
 			self.fileName = self.getNextFileName(self.fileName)
+			self.setupAndPlay()
 
 	def preMovie(self):
 		if self.state != self.INIT:
-			self.pauseMovie()
+			#self.pauseMovie()
 			self.sendRtspRequest(self.TEARDOWN)
 			self.state = self.INIT
 			self.threadlisten.join()
@@ -534,8 +540,10 @@ class Client:
 			self.totalTime = 0
 			self.connectToServer()
 			self.frameNbr = 0
+			self.setupAndPlay()
 		else:
 			self.fileName = self.getPreFileName(self.fileName)
+			self.setupAndPlay()
 
 
 
