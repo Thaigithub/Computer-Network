@@ -2,6 +2,7 @@ import math
 from tkinter import *
 import tkinter.messagebox
 import time
+#import tkinter as tk
 tkinter.messagebox
 from tkinter import messagebox 
 tkinter.messagebox
@@ -29,6 +30,7 @@ class Client:
 	INIT = 0
 	READY = 1
 	PLAYING = 2
+	SWITCHING = 3
 	state = INIT
 
 	SETUP = 0
@@ -64,7 +66,10 @@ class Client:
 		self.frameNbr = 0
 		self.frameSeq=0
 		self.totalTime = 0
-
+	def switch_clicked(self):
+		if self.is_switch.get() == 1:
+			self.state = self.SWITCHING
+			self.switchMovie(self.clicked.get())
 	def createWidgets(self):
 		"""Build GUI."""
 
@@ -123,6 +128,24 @@ class Client:
 		self.label = Label(self.master, height=19)
 		self.label.grid(row=0, column=1, columnspan=4, sticky=W+E+N+S, padx=5, pady=5)
 
+		self.list_file = os.listdir()
+		self.list_movie = []
+		for file in self.list_file:
+			if file.find(".Mjpeg") != -1:
+				self.list_movie.append(file)
+		self.clicked = StringVar()
+
+		# initial menu text
+		self.clicked.set( "Please choose Movie" )
+
+		# Create Dropdown menu
+		self.drop = OptionMenu( self.master , self.clicked , *self.list_movie )
+		self.drop.grid(row=0, column=7,columnspan = 5,  padx=2, pady=2)
+		self.is_switch = IntVar()
+		self.switch_check = Checkbutton(self.master, text="Change Movie", variable = self.is_switch, onvalue = 1, offvalue = 0, command=self.switch_clicked)
+		self.switch_check.grid(row=1, column=7,columnspan = 5,  padx=2, pady=2)
+
+	
 	def setupMovie(self):
 		"""Setup button handler."""
 		if self.state == self.INIT:
@@ -501,7 +524,23 @@ class Client:
 			return firstFileName
 		#print(nextFileName)
 		return nextFileName
-
+	def switchMovie(self, newMovie):
+		if self.state == self.SWITCHING:
+			self.sendRtspRequest(self.TEARDOWN)
+			self.state = self.INIT
+			self.threadlisten.join()
+			self.threadrecv.join()
+			os.remove(CACHE_FILE_NAME + str(self.sessionId) + CACHE_FILE_EXT)
+			self.fileName = newMovie
+			self.rtspSeq = 0
+			self.sessionId = 0
+			self.requestSent = -1
+			self.teardownAcked = 0
+			self.connectToServer()
+			self.frameNbr = 0
+			self.totalTime = 0
+			self.frameSeq=0
+			self.setupAndPlay()
 	def nextMovie(self):
 		if self.state != self.INIT:
 			#self.pauseMovie()
