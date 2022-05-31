@@ -69,15 +69,15 @@ class Client:
 		"""Build GUI."""
 
 		# Create Previous button
-		self.previd = PhotoImage(file ="icon/previous_video.png")
-		self.start = Button(self.master, width=100, padx=3, pady=3, bd= 0)
+		self.previd = PhotoImage(file ="icon/icons8-previous-16.png")
+		self.start = Button(self.master, width=150, padx=3, pady=3, bd= 0)
 		self.start['image'] = self.previd
 		self.start["command"] = self.preMovie
 		self.start.grid(row=0, column=0, columnspan = 1, padx=2, pady=2)
 
 
 		# Create FastBackward button
-		self.imageleft = PhotoImage(file ="icon/left.png")
+		self.imageleft = PhotoImage(file ="icon/icons8-rewind-16.png")
 		self.start = Button(self.master, width=100, padx=3, pady=3, bd= 0)
 		self.start['image'] = self.imageleft
 		self.start["command"] = self.fastBackward
@@ -88,8 +88,8 @@ class Client:
 		self.Timelabel.grid(row=1, column=1, columnspan=1, padx=2, pady=2)
 
 		# Create Play button
-		self.image = PhotoImage(file ="icon/play.png")
-		self.pause = Button(self.master, width=100, padx=2, pady=3, bd = 0)
+		self.image = PhotoImage(file ="icon/icons8-play-16.png")
+		self.pause = Button(self.master, width=150, padx=2, pady=3, bd = 0)
 		self.pause['image'] = self.image
 		self.pause["command"] = self.setupAndPlay
 		self.pause.grid(row=1, column=2, columnspan = 1, padx=2, pady=2)
@@ -106,15 +106,15 @@ class Client:
 		self.Totallabel.grid(row=1, column=4, columnspan=1, padx=2, pady=2)
 
 		# Create Fastforward button
-		self.imageright = PhotoImage(file ="icon/right.png")
+		self.imageright = PhotoImage(file ="icon/icons8-fast-forward-16.png")
 		self.teardown = Button(self.master,width=100, padx=3, pady=3, bd = 0)
 		self.teardown['image'] = self.imageright
 		self.teardown["command"] =  self.fastForward
 		self.teardown.grid(row=1, column=5, columnspan = 1, padx=2, pady=2)
 
 		# Create Next button
-		self.nextvid = PhotoImage(file ="icon/next_video.png")
-		self.start = Button(self.master, width=100, padx=5, pady=5, bd= 0)
+		self.nextvid = PhotoImage(file ="icon/icons8-next-16.png")
+		self.start = Button(self.master, width=150, padx=5, pady=5, bd= 0)
 		self.start['image'] = self.nextvid
 		self.start["command"] = self.nextMovie
 		self.start.grid(row=0, column=5,columnspan = 1,  padx=2, pady=2)
